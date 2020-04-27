@@ -14,16 +14,15 @@ const User = require('../../models/User');
 router.post(
   '/',
   [
-    check('name', 'Name is Required')
-      .not()
-      .isEmpty(),
+    check('name', 'Name is Required').not().isEmpty(),
     check('email', 'please include email').isEmail(),
     check(
       'password',
       'please enter a password with 6 or more characters'
-    ).isLength({ min: 6 })
+    ).isLength({ min: 6 }),
   ],
   async (req, res) => {
+    console.log(req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -45,7 +44,7 @@ router.post(
         name,
         email,
         avatar,
-        password
+        password,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -56,8 +55,8 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(
